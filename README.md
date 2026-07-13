@@ -79,7 +79,7 @@ environment, skip it with:
 Run the packaged jar (one process serves both API and UI on port 8080):
 
 ```bash
-java -jar build/libs/ensemble-0.0.1-SNAPSHOT.jar
+java -jar build/libs/app.jar
 # then open http://localhost:8080
 ```
 

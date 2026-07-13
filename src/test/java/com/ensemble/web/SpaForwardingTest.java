@@ -45,6 +45,14 @@ class SpaForwardingTest {
 	}
 
 	@Test
+	void unknownApiPath_returns404_notSpaShell() throws Exception {
+		// The SPA fallback must not swallow unmapped API routes: an unknown
+		// /api/** path returns 404 rather than 200 with the SPA shell.
+		mockMvc.perform(get("/api/does-not-exist"))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
 	void staticAsset_isServedDirectly_notSpaIndex() throws Exception {
 		mockMvc.perform(get("/assets/probe.js"))
 				.andExpect(status().isOk())

@@ -28,6 +28,6 @@ RUN ./gradlew bootJar -PskipFrontend --no-daemon
 # --- Stage 3: minimal runtime --------------------------------------------
 FROM eclipse-temurin:21-jre AS runtime
 WORKDIR /app
-COPY --from=backend /app/build/libs/ensemble-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=backend /app/build/libs/app.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

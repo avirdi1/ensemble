@@ -28,6 +28,12 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+// Stable jar name, decoupled from the project version, so the Dockerfile (and
+// any run script) does not break on a version bump.
+tasks.named('bootJar') {
+	archiveFileName = 'app.jar'
+}
+
 jacocoTestReport {
 	dependsOn test
 	reports {
@@ -60,6 +66,12 @@ tasks.register('buildFrontend', Exec) {
 	inputs.file(file("${frontendDir}/package.json")).withPropertyName('packageJson')
 	inputs.file(file("${frontendDir}/package-lock.json")).withPropertyName('packageLock')
 	inputs.file(file("${frontendDir}/vite.config.ts")).withPropertyName('viteConfig')
+	// The build runs `tsc -b && vite build`, so tsconfig changes must invalidate it too.
+	inputs.files(
+		file("${frontendDir}/tsconfig.json"),
+		file("${frontendDir}/tsconfig.app.json"),
+		file("${frontendDir}/tsconfig.node.json"),
+	).withPropertyName('tsConfigs')
 	outputs.dir(frontendStaticDir).withPropertyName('staticOutput')
 	// `npm ci` for a clean, lockfile-exact install, then the production build.
 	if (isWindows) {
