@@ -1,0 +1,188 @@
+package com.ensemble.wardrobe.web;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.Instant;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.ensemble.storage.InvalidImageException;
+import com.ensemble.wardrobe.Item;
+import com.ensemble.wardrobe.ItemNotFoundException;
+import com.ensemble.wardrobe.WardrobeService;
+
+@WebMvcTest(WardrobeController.class)
+class WardrobeControllerTest {
+
+	@Autowired
+	MockMvc mockMvc;
+
+	@MockitoBean
+	WardrobeService service;
+
+	private Item sample(String id) {
+		Item item = new Item();
+		item.setItemId(id);
+		item.setCategory("top");
+		item.setPrimaryColor("navy");
+		item.setFormality(3);
+		item.setWarmth(2);
+		item.setDescriptors(List.of("cotton"));
+		item.setPhotoKey(id + ".jpg");
+		item.setCreatedAt(Instant.parse("2026-07-13T00:00:00Z"));
+		item.setWornCount(0);
+		return item;
+	}
+
+	private MockMultipartFile photoPart() {
+		return new MockMultipartFile("photo", "p.jpg", "image/jpeg", new byte[]{1, 2, 3});
+	}
+
+	@Test
+	void createItem_multipart_returns201WithBodyAndLocation() throws Exception {
+		when(service.create(any(), any())).thenReturn(sample("new-id"));
+
+		mockMvc.perform(multipart("/api/items")
+				.file(photoPart())
+				.param("category", "top")
+				.param("primaryColor", "navy")
+				.param("formality", "3")
+				.param("warmth", "2"))
+			.andExpect(status().isCreated())
+			.andExpect(header().string("Location", "/api/items/new-id"))
+			.andExpect(jsonPath("$.itemId").value("new-id"))
+			.andExpect(jsonPath("$.photoUrl").value("/api/items/new-id/photo"));
+	}
+
+	@Test
+	void createItem_missingPhoto_returns400() throws Exception {
+		mockMvc.perform(multipart("/api/items")
+				.param("category", "top")
+				.param("formality", "3")
+				.param("warmth", "2"))
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void createItem_invalidImage_returns400() throws Exception {
+		when(service.create(any(), any())).thenThrow(new InvalidImageException("not an image"));
+
+		mockMvc.perform(multipart("/api/items")
+				.file(photoPart())
+				.param("category", "top")
+				.param("formality", "3")
+				.param("warmth", "2"))
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void listItems_returnsArray() throws Exception {
+		when(service.list()).thenReturn(List.of(sample("a"), sample("b")));
+
+		mockMvc.perform(get("/api/items"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.length()").value(2))
+			.andExpect(jsonPath("$[0].itemId").value("a"));
+	}
+
+	@Test
+	void getItem_returnsItem() throws Exception {
+		when(service.get("a")).thenReturn(sample("a"));
+
+		mockMvc.perform(get("/api/items/a"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.itemId").value("a"))
+			.andExpect(jsonPath("$.photoUrl").value("/api/items/a/photo"));
+	}
+
+	@Test
+	void getItem_unknownId_returns404() throws Exception {
+		when(service.get("nope")).thenThrow(new ItemNotFoundException("nope"));
+
+		mockMvc.perform(get("/api/items/nope"))
+			.andExpect(status().isNotFound())
+			.andExpect(jsonPath("$.error").value("not_found"));
+	}
+
+	@Test
+	void getPhoto_returnsJpegBytes() throws Exception {
+		when(service.loadPhoto("a")).thenReturn(new byte[]{10, 20, 30});
+
+		mockMvc.perform(get("/api/items/a/photo"))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.IMAGE_JPEG))
+			.andExpect(content().bytes(new byte[]{10, 20, 30}));
+	}
+
+	@Test
+	void updateTags_returnsUpdatedItem() throws Exception {
+		when(service.updateTags(eq("a"), any())).thenReturn(sample("a"));
+
+		mockMvc.perform(put("/api/items/a/tags")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{\"category\":\"top\",\"formality\":4,\"warmth\":2}"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.itemId").value("a"));
+	}
+
+	@Test
+	void updateTags_formalityOutOfRange_returns400() throws Exception {
+		mockMvc.perform(put("/api/items/a/tags")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{\"category\":\"top\",\"formality\":9,\"warmth\":2}"))
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void updateTags_warmthOutOfRange_returns400() throws Exception {
+		mockMvc.perform(put("/api/items/a/tags")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{\"category\":\"top\",\"formality\":3,\"warmth\":9}"))
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void updateTags_unknownId_returns404() throws Exception {
+		when(service.updateTags(eq("nope"), any())).thenThrow(new ItemNotFoundException("nope"));
+
+		mockMvc.perform(put("/api/items/nope/tags")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{\"category\":\"top\",\"formality\":3,\"warmth\":2}"))
+			.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void deleteItem_returns204() throws Exception {
+		doNothing().when(service).delete("a");
+
+		mockMvc.perform(delete("/api/items/a"))
+			.andExpect(status().isNoContent());
+	}
+
+	@Test
+	void deleteItem_unknownId_returns404() throws Exception {
+		doThrow(new ItemNotFoundException("nope")).when(service).delete("nope");
+
+		mockMvc.perform(delete("/api/items/nope"))
+			.andExpect(status().isNotFound());
+	}
+}

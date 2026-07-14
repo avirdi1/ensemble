@@ -20,6 +20,8 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	// Bean Validation (Hibernate Validator) for request DTO constraints.
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// AWS SDK v2 — DynamoDB Enhanced Client for single-table persistence.
 	// No Spring Data / JPA (see AGENTS.md): one item model, itemId partition key.
