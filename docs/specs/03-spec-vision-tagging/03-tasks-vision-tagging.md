@@ -62,7 +62,7 @@ Claude client is mocked in every test; **no live API calls in the suite**.
 - [x] 1.6 RED→GREEN: write `AnthropicVisionModelClientTest` with a **mocked** `AnthropicClient` (Mockito captor on the request params); assert the request targets `claude-haiku-4-5`, carries an image content block, and requests structured/forced JSON — no live call. Implement until green. *(Covers FR1.1 model, FR1.3 request shape, FR1.7 image only in this vision request.)*
 - [x] 1.7 REFACTOR: `grep -R "com.anthropic" src/main/java` shows the SDK imported **only** in `AnthropicConfig` + `AnthropicVisionModelClient` (seam boundary held); confirm `block-anthropic-keys` scan is green.
 
-### [ ] 2.0 Shared image decode/resize guard (extract from storage, reuse)
+### [x] 2.0 Shared image decode/resize guard (extract from storage, reuse)
 
 #### 2.0 Proof Artifact(s)
 
@@ -72,10 +72,10 @@ Claude client is mocked in every test; **no live API calls in the suite**.
 
 #### 2.0 Tasks
 
-- [ ] 2.1 RED: write `ImageProcessorTest` — `resizesOver800EdgeToJpeg`, `leavesSmallImageUnchanged` (no upscale), `nonImage_throwsInvalidImageException`, `overPixelCap_throwsInvalidImageException`; confirm it fails (class absent).
-- [ ] 2.2 GREEN: create `com.ensemble.storage.ImageProcessor` (`@Component`, constructor takes `PhotoProperties`); move `decode` + pixel-cap check + `toResizedJpeg` + the `readRaster` test-seam + `MAX_EDGE`=800 from `LocalDiskPhotoStorage` into it; make `ImageProcessorTest` green.
-- [ ] 2.3 GREEN: refactor `LocalDiskPhotoStorage` to inject `ImageProcessor` and delegate the resize on `save`; delete the now-moved private methods.
-- [ ] 2.4 REFACTOR: update `LocalDiskPhotoStorageTest` construction to pass an `ImageProcessor` and confirm it stays green; run `jacocoTestReport -PskipFrontend` and confirm 100% branch on the decode/pixel-cap/resize logic is retained in `ImageProcessor`.
+- [x] 2.1 RED: write `ImageProcessorTest` — `resizesOver800EdgeToJpeg`, `leavesSmallImageUnchanged` (no upscale), `nonImage_throwsInvalidImageException`, `overPixelCap_throwsInvalidImageException`; confirm it fails (class absent).
+- [x] 2.2 GREEN: create `com.ensemble.storage.ImageProcessor` (`@Component`, constructor takes `PhotoProperties`); move `decode` + pixel-cap check + `toResizedJpeg` + the `readRaster` test-seam + `MAX_EDGE`=800 from `LocalDiskPhotoStorage` into it; make `ImageProcessorTest` green.
+- [x] 2.3 GREEN: refactor `LocalDiskPhotoStorage` to inject `ImageProcessor` and delegate the resize on `save`; delete the now-moved private methods.
+- [x] 2.4 REFACTOR: update `LocalDiskPhotoStorageTest` construction to pass an `ImageProcessor` and confirm it stays green; run `jacocoTestReport -PskipFrontend` and confirm 100% branch on the decode/pixel-cap/resize logic is retained in `ImageProcessor`.
 
 ### [ ] 3.0 TaggingService: vision JSON → tags + graceful fallback (mocked)
 
