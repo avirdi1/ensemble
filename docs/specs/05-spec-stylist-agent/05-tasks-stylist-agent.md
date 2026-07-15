@@ -100,7 +100,7 @@ result) → graceful error through the existing exception-handling pattern.
 - [x] 2.4 Add `StyleController.class` to `ApiExceptionHandler` `assignableTypes` (import it) and confirm the upstream/ungroundable-failure → graceful-response mapping is covered by the `postStyle_upstreamFailure_returnsGracefulError` test.
 - [x] 2.5 Verify + capture proof: `./gradlew test -PskipFrontend` green (140/0/0); MockMvc suite is the automated proof. Live `curl` documented as reviewer-runnable in `05-proofs/05-task-02-proofs.md` — not run here (no `ENSEMBLE_ANTHROPIC_API_KEY` in this environment; repo standard is keyless tests), and deliberately not fabricated.
 
-### [ ] 3.0 Chat UI — vibe input → outfit card with real photos + reason
+### [x] 3.0 Chat UI — vibe input → outfit card with real photos + reason
 
 The user-facing mobile-first `/style` route: a vibe text input submits to
 `POST /api/style` via a new `api/style.ts` (copying the `api/items.ts`
@@ -118,9 +118,9 @@ screens; reachable from `App.tsx` nav. Visual direction driven by the
 
 #### 3.0 Tasks
 
-- [ ] 3.1 RED: write `api/style.test.ts` — `requestStyle(prompt)` POSTs to `/api/style` with a JSON body, returns the parsed `{ itemIds, reason, items }`, and throws on a non-2xx response (mirroring the `api/items.ts` error handling), using `vi.stubGlobal('fetch', …)`.
-- [ ] 3.2 GREEN: implement `frontend/src/api/style.ts` — copy the `api/items.ts` fetch-wrapper (same non-2xx→throw behavior) and re-export/reuse `photoUrl(id)` for the card.
-- [ ] 3.3 RED: write `Stylist.test.tsx` with `vi.mock('../api/style')` — submit a vibe → loading indicator → outfit-card render (photos via `photoUrl`, reason text); error state shows a retry that re-requests; empty-wardrobe response (empty `itemIds` + `reason`) shows the friendly empty state.
-- [ ] 3.4 GREEN: implement `frontend/src/routes/Stylist.tsx` — vibe input + submit, `loading`/`error`+retry/`empty`/`ready` states following the `WardrobeGrid`/`ItemDetail` pattern, outfit card rendered from `photoUrl(id)` + reason. **Invoke the `frontend-design` skill** to drive the card's visual direction; reuse Care Label `:root` tokens (no new design language). Refactor to green.
-- [ ] 3.5 Register the `/style` route + a nav link in `App.tsx` (react-router, alongside `/`, `/add`, `/item/:id`).
-- [ ] 3.6 Verify + capture proof: `cd frontend && npm test -- --run` green and `npm run lint` clean; run the app on a ~390px viewport and save the rendered outfit card to `docs/specs/05-spec-stylist-agent/proof/outfit-card.png`.
+- [x] 3.1 RED: write `api/style.test.ts` — `requestStyle(prompt)` POSTs to `/api/style` with a JSON body, returns the parsed `{ itemIds, reason, items }`, and throws on a non-2xx response (mirroring the `api/items.ts` error handling), using `vi.stubGlobal('fetch', …)`.
+- [x] 3.2 GREEN: implement `frontend/src/api/style.ts` — copy the `api/items.ts` fetch-wrapper (same non-2xx→throw behavior) and re-export/reuse `photoUrl(id)` for the card.
+- [x] 3.3 RED: write `Stylist.test.tsx` with `vi.mock('../api/style')` — submit a vibe → loading indicator → outfit-card render (photos via `photoUrl`, reason text); error state shows a retry that re-requests; empty-wardrobe response (empty `itemIds` + `reason`) shows the friendly empty state.
+- [x] 3.4 GREEN: implement `frontend/src/routes/Stylist.tsx` — vibe input + submit, `loading`/`error`+retry/`empty`/`ready` states following the `WardrobeGrid`/`ItemDetail` pattern, outfit card rendered from `photoUrl(id)` + reason. **Invoke the `frontend-design` skill** to drive the card's visual direction; reuse Care Label `:root` tokens (no new design language). Refactor to green.
+- [x] 3.5 Register the `/style` route + a nav link in `App.tsx` (react-router, alongside `/`, `/add`, `/item/:id`).
+- [x] 3.6 Verify + capture proof: `cd frontend && npm test -- --run` green (66/66) and `npm run lint` clean; ran the app on a ~390px viewport and saved the rendered outfit card to `docs/specs/05-spec-stylist-agent/05-proofs/05-task-03-outfit-card.png` (real backend-served photos; keyless `/api/style` shim — see `05-task-03-proofs.md`).
