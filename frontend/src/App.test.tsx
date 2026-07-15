@@ -50,8 +50,18 @@ describe('App shell + routing', () => {
     expect(await screen.findByTestId('item-detail')).toBeInTheDocument()
   })
 
+  it('mounts the stylist screen at /style', async () => {
+    renderAt('/style')
+    expect(await screen.findByTestId('stylist')).toBeInTheDocument()
+  })
+
   it('exposes a persistent add-item navigation control', () => {
     renderAt('/')
     expect(screen.getByRole('link', { name: /add/i })).toHaveAttribute('href', '/add')
+  })
+
+  it('exposes a persistent stylist navigation control', () => {
+    renderAt('/')
+    expect(screen.getByRole('link', { name: /style/i })).toHaveAttribute('href', '/style')
   })
 })

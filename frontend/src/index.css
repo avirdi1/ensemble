@@ -122,6 +122,12 @@ a {
   letter-spacing: -0.03em;
 }
 
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
 .app-main {
   flex: 1;
   padding: var(--space-4) var(--space-4) calc(env(safe-area-inset-bottom) + var(--space-6));
@@ -447,6 +453,83 @@ select.input {
 
 .confirm-actions .btn {
   flex: 1;
+}
+
+/* ---- Stylist ------------------------------------------------------------ */
+
+/* Mono, uppercase micro-label — the care-label voice, reused for section eyebrows. */
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.vibe-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* The stylist's answer as a hang-tag: pieces above, the note below. */
+.outfit-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+}
+
+.outfit-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.outfit-count {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+/* The picked garments, one photo per piece; auto-fits any small count. */
+.outfit-pieces {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(4.5rem, 1fr));
+  gap: var(--space-2);
+}
+
+.outfit-piece {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--hairline);
+  background: var(--paper);
+}
+
+/* Signature: the reason set as a garment care note, hung on one cobalt "thread". */
+.outfit-note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--accent);
+}
+
+.outfit-reason {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
 }
 
 @media (prefers-reduced-motion: reduce) {
