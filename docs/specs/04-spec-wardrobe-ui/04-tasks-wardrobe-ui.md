@@ -138,7 +138,7 @@ confirmation. No wear-history shown (deferred to #7). Depends on 1.0 (and reuses
 - [x] 4.4 RED→GREEN: add a not-found test (unknown id → non-crashing "not found") and a failed save/delete test (error shown, context preserved); implement both states.
 - [x] 4.5 REFACTOR: style the detail screen mobile-first via the **frontend-design skill**; `npm run lint` clean; capture the detail mobile screenshot to `04-proofs/`.
 
-### [ ] 5.0 End-to-end proof against the live backend + docs
+### [x] 5.0 End-to-end proof against the live backend + docs
 
 Ties the UI to the running API and records the acceptance evidence (spec Success
 Metrics 1–3). Depends on 1.0–4.0.
@@ -151,7 +151,7 @@ Metrics 1–3). Depends on 1.0–4.0.
 
 #### 5.0 Tasks
 
-- [ ] 5.1 Add a "Wardrobe UI" section to `README.md`: how to run the UI in dev (`npm run dev` + backend + DynamoDB Local), the three routes, and that browsing/editing needs no Claude key (only live tagging does).
-- [ ] 5.2 Run `cd frontend && npm run test -- --run`, `npm run lint`, and `npm run build`; save the green summary to `04-proofs/`.
-- [ ] 5.3 Live run against the backend (DynamoDB Local + `bootRun` + Vite dev): exercise the three acceptance criteria at phone width; save sanitized screenshots/transcript (no secrets) to `04-proofs/`.
-- [ ] 5.4 Verify no secrets in `04-proofs/` and that pre-commit (frontend tests + lint + secret scan) is green before the final commit.
+- [x] 5.1 Add a "Wardrobe UI" section to `README.md`: how to run the UI in dev (`npm run dev` + backend + DynamoDB Local), the three routes, and that browsing/editing needs no Claude key (only live tagging does).
+- [x] 5.2 Run `cd frontend && npm run test -- --run`, `npm run lint`, and `npm run build`; save the green summary to `04-proofs/`.
+- [x] 5.3 Live run against the backend (DynamoDB Local + `bootRun` + Vite dev): exercise the three acceptance criteria at phone width; save sanitized screenshots/transcript (no secrets) to `04-proofs/`.
+- [x] 5.4 Verify no secrets in `04-proofs/` and that pre-commit (frontend tests + lint + secret scan) is green before the final commit.
