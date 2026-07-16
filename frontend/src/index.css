@@ -566,6 +566,39 @@ select.input {
   gap: var(--space-2);
 }
 
+/* Re-pick loop: a quiet pushback field + regenerate control, set off from the log
+   action by a hairline so the card reads log-first, adjust-second. Disabled + focus
+   states inherit the shared .btn / .input rules and the global reduced-motion guard. */
+.repick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--hairline);
+}
+
+.repick-row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: stretch;
+}
+
+.repick-row .input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Regenerate: a lighter-weight sibling to the primary "I wore this look" action. */
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+}
+
+.btn-ghost:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

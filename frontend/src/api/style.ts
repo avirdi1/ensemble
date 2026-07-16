@@ -16,6 +16,16 @@ export interface OutfitItem {
 }
 
 /**
+ * One turn of the re-pick conversation — mirrors the backend `StyleRequest.StyleTurn`.
+ * The server is stateless: the client accumulates the thread and resends it each turn.
+ * Text-only (the stylist never sees images); `assistant` turns summarize a prior pick.
+ */
+export interface StyleTurn {
+  role: 'user' | 'assistant'
+  text: string
+}
+
+/**
  * Grounded stylist result — mirrors the backend `StyleResponse`. An empty-wardrobe
  * (or too-small) response is a normal `200` carrying empty `itemIds`/`items` plus an
  * explanatory `reason`, not an error.
@@ -34,13 +44,18 @@ function ensureOk(response: Response, action: string): Response {
   return response
 }
 
-/** Ask the stylist for an outfit matching a free-text vibe. */
-export async function requestStyle(prompt: string): Promise<Outfit> {
+/**
+ * Ask the stylist for an outfit matching a free-text vibe. On a re-pick the caller
+ * passes the accumulated `history` (prior vibe + assistant summaries + feedback); the
+ * server reads it, produces a different look, and stays stateless. An empty history is
+ * omitted from the body so a first pick stays byte-for-byte backward compatible.
+ */
+export async function requestStyle(prompt: string, history: StyleTurn[] = []): Promise<Outfit> {
   const response = ensureOk(
     await fetch(BASE, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({ prompt, ...(history.length ? { history } : {}) }),
     }),
     'Style request',
   )

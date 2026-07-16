@@ -231,7 +231,7 @@ Depends on 1.0. (Spec Unit 3 — wear side.)
   `npm run lint`; capture the item-detail + logged-card screenshot (390px, sanitized).
   Commit.
 
-### [ ] 4.0 Pushback + "Show me another" re-pick UI (frontend)
+### [x] 4.0 Pushback + "Show me another" re-pick UI (frontend)
 
 After a look renders, adds a free-text pushback field and a "Show me another" regenerate
 button; both build the **full conversation thread** (prior pick(s) summarized as assistant
@@ -254,28 +254,28 @@ Meaningful-logic tests only. Depends on 2.0. (Spec Unit 3 — re-pick side.)
 
 #### 4.0 Tasks
 
-- [ ] 4.1 RED: In `api/style.test.ts`, add cases: `requestStyle(prompt, history)` sends a
+- [x] 4.1 RED: In `api/style.test.ts`, add cases: `requestStyle(prompt, history)` sends a
   body containing both `prompt` and the `history` array; `requestStyle(prompt)` (no history)
   sends a body without a populated `history` (backward-compatible). Use the existing fetch
   stub + body-capture pattern. Confirm fails (signature).
-- [ ] 4.2 GREEN: In `api/style.ts`, add `export interface StyleTurn { role: 'user' |
+- [x] 4.2 GREEN: In `api/style.ts`, add `export interface StyleTurn { role: 'user' |
   'assistant'; text: string }`; extend `requestStyle(prompt: string, history: StyleTurn[] =
   [])` to send `{ prompt, ...(history.length ? { history } : {}) }`. Update any existing
   body assertion for the no-history call. Make the tests pass.
-- [ ] 4.3 RED: In `Stylist.test.tsx`, update existing `requestStyle` call-shape assertions
+- [x] 4.3 RED: In `Stylist.test.tsx`, update existing `requestStyle` call-shape assertions
   to the new signature; add: after a look renders, a pushback textbox + "Show me another"
   button appear; submitting pushback calls `requestStyle` with the newest user text and a
   `history` containing the prior vibe + an assistant turn summarizing the prior pick, then
   renders the new look; the regenerate button does the same with a "show me another" user
   turn; both controls are disabled while loading; the error-with-retry and empty states
   still hold on a re-pick. Confirm fails.
-- [ ] 4.4 GREEN: In `Stylist.tsx`, keep a `history: StyleTurn[]`; after a successful pick
+- [x] 4.4 GREEN: In `Stylist.tsx`, keep a `history: StyleTurn[]`; after a successful pick
   append `assistant` turn summarizing it (e.g. `Previously chose: a, b — <reason>`); render
   a pushback field + "Show me another" button below the card; on submit/regenerate call
   `requestStyle(newestUserText, history)` (history = all turns before the newest), render
   the result, then append the newest user turn + the new assistant summary; disable controls
   while `status==='loading'`; preserve the existing states. Make the tests pass.
-- [ ] 4.5 REFACTOR: Add Care-Label styles for the pushback field, the regenerate button,
+- [x] 4.5 REFACTOR: Add Care-Label styles for the pushback field, the regenerate button,
   and disabled states (respect `:focus-visible` / `prefers-reduced-motion`). Run
   `npm test -- --run` and `npm run lint`; capture the two-different-looks screenshot
   (390px, sanitized). Commit.
