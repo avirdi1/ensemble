@@ -1,10 +1,12 @@
+import { authedFetch } from './http'
 import { photoUrl } from './items'
 
 // Typed client for the stylist API (`POST /api/style`). Follows the `api/items.ts`
 // pattern: resolve with the parsed body on a 2xx response, throw on any non-2xx or
 // network/transport failure so callers can render an error state. The card renders
 // stored photos via the shared `photoUrl(id)` builder — re-exported here so the
-// route imports a single stylist-facing module.
+// route imports a single stylist-facing module. Requests go through `authedFetch` so
+// the session token is injected and a `401` returns the client to the passcode gate.
 
 const BASE = '/api/style'
 
@@ -36,7 +38,7 @@ function ensureOk(response: Response, action: string): Response {
 /** Ask the stylist for an outfit matching a free-text vibe. */
 export async function requestStyle(prompt: string): Promise<Outfit> {
   const response = ensureOk(
-    await fetch(BASE, {
+    await authedFetch(BASE, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt }),

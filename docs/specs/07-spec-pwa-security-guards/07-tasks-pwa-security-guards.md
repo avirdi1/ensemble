@@ -118,7 +118,7 @@ not break the existing `@WebMvcTest` slices / `@SpringBootTest` context tests. (
 - [x] 2.6 Add `ensemble.security.*` to `src/main/resources/application.yml` (`passcode: ${ENSEMBLE_PASSCODE:}`, `session-secret: ${ENSEMBLE_SESSION_SECRET:}`, `session-ttl: PT12H`) and safe test values to `src/test/resources/application.yml`; log the "gate closed (blank passcode)" state at startup.
 - [x] 2.7 Run `./gradlew test`; confirm specs 01–06 slices + context tests stay green. Boot the app and capture the `curl` end-to-end + backend-test proof artifacts.
 
-### [ ] 3.0 Passcode gate — frontend entry screen & authenticated fetch
+### [x] 3.0 Passcode gate — frontend entry screen & authenticated fetch
 
 Frontend slice (meaningful-logic tests): an `api/auth.ts` token client, a shared authenticated
 fetch that injects `X-Ensemble-Session` and clears the token + returns to the gate on any `401`,
@@ -136,12 +136,12 @@ stored in `sessionStorage`. (Spec Unit 2 — frontend.)
 
 #### 3.0 Tasks
 
-- [ ] 3.1 **(RED→GREEN)** Write `api/auth.test.ts` (`login(passcode)` POSTs `/api/auth` and stores the returned token in `sessionStorage`; `getToken()` reads it; `clearToken()` removes it). Then implement `frontend/src/api/auth.ts`.
-- [ ] 3.2 **(RED→GREEN)** Write `api/http.test.ts` (the wrapper injects `X-Ensemble-Session` from `getToken()`; on a `401` it clears the token and fires a re-auth signal). Then implement `frontend/src/api/http.ts`, and refactor `api/items.ts` + `api/style.ts` to route through it (update their tests first to assert the header is sent).
-- [ ] 3.3 **(RED→GREEN)** Update `api/items.test.ts` so `photoUrl(id)` appends `?token=<token>` when a token is stored (and omits it when absent). Then update `photoUrl`.
-- [ ] 3.4 **(RED→GREEN)** Write `AuthGate.test.tsx` (no token → passcode screen; submit correct → token stored → children render; injected API `401` → back to gate; wrong passcode → inline error). Then implement `frontend/src/components/AuthGate.tsx` and wrap the routed app in `App.tsx`.
-- [ ] 3.5 Style the passcode entry screen in `index.css` using the Care Label tokens (single centered card, `type="password"` input with an appropriate mobile keyboard, ≥44px submit target, inline error, honoring `:focus-visible` + `prefers-reduced-motion`). Do not introduce a second visual language.
-- [ ] 3.6 Run `cd frontend && npm test -- --run` (all green) and `npm run lint`; capture the RTL-test + passcode-screen screenshot proofs.
+- [x] 3.1 **(RED→GREEN)** Write `api/auth.test.ts` (`login(passcode)` POSTs `/api/auth` and stores the returned token in `sessionStorage`; `getToken()` reads it; `clearToken()` removes it). Then implement `frontend/src/api/auth.ts`.
+- [x] 3.2 **(RED→GREEN)** Write `api/http.test.ts` (the wrapper injects `X-Ensemble-Session` from `getToken()`; on a `401` it clears the token and fires a re-auth signal). Then implement `frontend/src/api/http.ts`, and refactor `api/items.ts` + `api/style.ts` to route through it (update their tests first to assert the header is sent).
+- [x] 3.3 **(RED→GREEN)** Update `api/items.test.ts` so `photoUrl(id)` appends `?token=<token>` when a token is stored (and omits it when absent). Then update `photoUrl`.
+- [x] 3.4 **(RED→GREEN)** Write `AuthGate.test.tsx` (no token → passcode screen; submit correct → token stored → children render; injected API `401` → back to gate; wrong passcode → inline error). Then implement `frontend/src/components/AuthGate.tsx` and wrap the routed app in `App.tsx`.
+- [x] 3.5 Style the passcode entry screen in `index.css` using the Care Label tokens (single centered card, `type="password"` input with an appropriate mobile keyboard, ≥44px submit target, inline error, honoring `:focus-visible` + `prefers-reduced-motion`). Do not introduce a second visual language.
+- [x] 3.6 Run `cd frontend && npm test -- --run` (all green) and `npm run lint`; capture the RTL-test + passcode-screen screenshot proofs.
 
 ### [ ] 4.0 Daily call cap — atomic counter, 429 & wardrobe scan filter
 
