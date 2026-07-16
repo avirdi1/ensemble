@@ -43,7 +43,7 @@ follow **strict TDD** (RED → GREEN → REFACTOR); frontend units test meaningf
 
 ## Tasks
 
-### [ ] 1.0 Deterministic "I wore this" wear-history write (backend domain)
+### [x] 1.0 Deterministic "I wore this" wear-history write (backend domain)
 
 Adds `WardrobeService.markWorn(itemId)` — a read-modify-write that sets
 `wornCount = prior + 1` (null/absent treated as 0) and `lastWorn = Instant.now()`,
@@ -69,7 +69,7 @@ Strict TDD; 100% branch on the null/zero seed path. (Spec Unit 1.)
 
 #### 1.0 Tasks
 
-- [ ] 1.1 RED: In `WardrobeServiceTest`, add `markWorn_firstTime_setsCountToOneAndLastWorn`
+- [x] 1.1 RED: In `WardrobeServiceTest`, add `markWorn_firstTime_setsCountToOneAndLastWorn`
   (stub `findById` → item with `wornCount=0`/null, `save` echoes; assert returned
   `wornCount==1` and `lastWorn` non-null; capture the saved `Item` to confirm both were
   set), `markWorn_existingCount_incrementsAndUpdatesLastWorn` (start `wornCount=7` → `8`),
@@ -77,23 +77,23 @@ Strict TDD; 100% branch on the null/zero seed path. (Spec Unit 1.)
   `markWorn_unknownId_throwsNotFound` (`findById` empty → `ItemNotFoundException`, `save`
   never called). Reuse the `existing(id)` helper + `ArgumentCaptor<Item>` pattern. Confirm
   it fails to compile/run (no method).
-- [ ] 1.2 GREEN: Implement `WardrobeService.markWorn(String itemId)` — `find(itemId)`,
+- [x] 1.2 GREEN: Implement `WardrobeService.markWorn(String itemId)` — `find(itemId)`,
   `count = (item.getWornCount() == null ? 0 : item.getWornCount()) + 1`,
   `item.setWornCount(count)`, `item.setLastWorn(Instant.now())`,
   `return ItemMapper.toResponse(repository.save(item))`. Make the tests pass.
-- [ ] 1.3 RED: In `WardrobeControllerTest`, add `postWorn_valid_returns200WithUpdatedItem`
+- [x] 1.3 RED: In `WardrobeControllerTest`, add `postWorn_valid_returns200WithUpdatedItem`
   (mock `service.markWorn("abc")` → an `ItemResponse` with `wornCount=8`; `POST
   /api/items/abc/worn`; expect 200 + `jsonPath("$.wornCount").value(8)` +
   non-blank `lastWorn`) and `postWorn_unknownId_returns404` (mock throws
   `ItemNotFoundException`; expect 404, `error=not_found`). Confirm fails (no mapping).
-- [ ] 1.4 GREEN: Add `@PostMapping("/{id}/worn")` to `WardrobeController` returning
+- [x] 1.4 GREEN: Add `@PostMapping("/{id}/worn")` to `WardrobeController` returning
   `service.markWorn(id)` (`ItemResponse`, 200). No new exception mapping (existing
   `ItemNotFoundException` handler covers 404). Make the tests pass.
-- [ ] 1.5 RED→GREEN: In `WardrobeRepositoryIT` (DynamoDB Local), add a round-trip that
+- [x] 1.5 RED→GREEN: In `WardrobeRepositoryIT` (DynamoDB Local), add a round-trip that
   saves an item (`wornCount=0`), invokes the wear write, then reloads and asserts
   `wornCount==1`, `lastWorn` set, and tags/`createdAt` unchanged. Use the existing
   container/table harness in that IT.
-- [ ] 1.6 REFACTOR: Update the `Item.java` class javadoc (wear-history is now mutated by
+- [x] 1.6 REFACTOR: Update the `Item.java` class javadoc (wear-history is now mutated by
   #7); add concise javadoc to `markWorn` (deterministic, server-computed). Run
   `./gradlew test -PskipFrontend` and `./gradlew jacocoTestReport`; confirm green and 100%
   branch on the update rule. Commit.
