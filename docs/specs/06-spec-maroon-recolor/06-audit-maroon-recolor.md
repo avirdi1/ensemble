@@ -28,7 +28,7 @@ recorded below for the implementer's awareness.
 | `docs/TESTING.md` | yes | Frontend view plumbing = light; pure recolor needs no new tests, only suite green | none |
 | `README.md` (root) | yes | Token-driven UI; Vite dev flow | none |
 | `frontend/package.json` | yes | Test = `vitest` (`npm test -- --run`); lint = `eslint .` | none |
-| `06-spec-maroon-recolor.md` | yes | 7 token replacements + `--on-accent`; theme-color meta; defer 6 tokens to #7 | none |
+| `06-spec-maroon-recolor.md` | yes | 7 token replacements + `--on-accent`; theme-color meta; defer 6 tokens to #20 | none |
 
 ## Requirement → Task → Test-Artifact Traceability
 

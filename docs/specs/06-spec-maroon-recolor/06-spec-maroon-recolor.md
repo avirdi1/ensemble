@@ -1,6 +1,7 @@
 # 06-spec-maroon-recolor.md
 
-> GitHub issue: _to be filled in once created_
+> GitHub issue: none — recolor tracked directly via PR #18 (no dedicated issue).
+> The six deferred stylist-only tokens are tracked in issue #20 (stylist-screen redesign).
 
 ## Introduction/Overview
 
@@ -22,7 +23,7 @@ app needs** — the 7 replaced tokens plus `--on-accent` (used to tokenize the o
 hard-coded button color). The six other tokens from the handoff
 (`--paper-sunk`, `--border`, `--ink-2`, `--placeholder`, `--pip-empty`,
 `--accent-line`) are only consumed by the upcoming stylist-screen redesign and
-are **deferred to issue #7**.
+are **deferred to issue #20**.
 
 ## Goals
 
@@ -33,14 +34,14 @@ are **deferred to issue #7**.
 - Update the browser `theme-color` meta tag to the new paper color.
 - Change zero component behavior: every existing frontend test still passes, and
   every screen keeps its current layout and interactions.
-- Leave the six stylist-only tokens for issue #7 (explicit non-goal).
+- Leave the six stylist-only tokens for issue #20 (explicit non-goal).
 
 ## User Stories
 
 - **As a user of Ensemble**, I want the app to present a consistent, intentional
   maroon-and-beige look so that it feels like one finished product rather than a
   default template.
-- **As the developer building the stylist-screen redesign (issue #7)**, I want
+- **As the developer building the stylist-screen redesign (issue #20)**, I want
   the maroon palette already applied so that I build that screen directly against
   final base colors and only add the drawer/tray/pip tokens I actually use.
 - **As a reviewer**, I want the recolor to be a self-contained token change so
@@ -84,7 +85,7 @@ palette token, and register `--on-accent` for reuse.
   comment matching the handoff's `theme-tokens.css`).
 - The system shall change `frontend/src/index.css` (the `.btn-add, .btn-primary`
   rule, ~line 169) from `color: #fff` to `color: var(--on-accent)`.
-- The system shall not add the other six handoff tokens (deferred to issue #7).
+- The system shall not add the other six handoff tokens (deferred to issue #20).
 
 **Proof Artifacts:**
 - CLI: `grep -n "#fff" frontend/src/index.css` returning no bare-white match, and
@@ -96,15 +97,15 @@ palette token, and register `--on-accent` for reuse.
 ## Non-Goals (Out of Scope)
 
 1. **The six stylist-only tokens** (`--paper-sunk`, `--border`, `--ink-2`,
-   `--placeholder`, `--pip-empty`, `--accent-line`): defined in issue #7 where
+   `--placeholder`, `--pip-empty`, `--accent-line`): defined in issue #20 where
    they are first used, not here.
 2. **The stylist-screen redesign**: chat UI, flat-lay spec-sheet, pushback chips,
-   per-garment rationale, and routing changes are **issue #7**.
+   per-garment rationale, and routing changes are **issue #20**.
 3. **Any backend change**: this is frontend CSS/HTML only.
 4. **New components or markup changes**: no `.tsx` files change.
 5. **Dark mode or theme switching**: single fixed palette only.
 6. **Restyling the existing stylist card** (`.outfit-*` rules): it recolors for
-   free via tokens; its structure is left for issue #7.
+   free via tokens; its structure is left for issue #20.
 
 ## Design Considerations
 
@@ -120,7 +121,7 @@ Base palette applied in this spec:
 | `--accent` | `#7c2833` | maroon fills / large text / icons | ✅ Unit 1 |
 | `--accent-soft` | `#ecd9d3` | soft accent backgrounds | ✅ Unit 1 |
 | `--on-accent` | `#f6ecd9` | cream text/icons on maroon fill | ✅ Unit 2 |
-| `--paper-sunk`, `--border`, `--ink-2`, `--placeholder`, `--pip-empty`, `--accent-line` | (handoff values) | drawer / tray / pips / rationale (stylist screen) | ⏳ issue #7 |
+| `--paper-sunk`, `--border`, `--ink-2`, `--placeholder`, `--pip-empty`, `--accent-line` | (handoff values) | drawer / tray / pips / rationale (stylist screen) | ⏳ issue #20 |
 
 **Contrast rule (unchanged intent from the current system):** maroon `#7c2833`
 is used for fills, large text, and icons — never for small body text. Small body
@@ -168,7 +169,7 @@ or sample states; no sensitive data.
 2. **No stale colors:** grep finds zero occurrences of the 7 old cobalt/cream hex
    values and no bare `#fff` in `frontend/src/index.css`.
 3. **Correct tokens present:** the 7 replaced tokens + `--on-accent` exist in
-   `:root`; the six stylist-only tokens are absent (they belong to #7).
+   `:root`; the six stylist-only tokens are absent (they belong to #20).
 4. **Behavior unchanged:** `npm test -- --run` passes with no test modifications.
 5. **Contrast:** button cream-on-maroon and body ink-on-paper meet WCAG AA.
 
@@ -176,4 +177,4 @@ or sample states; no sensitive data.
 
 No open questions at this time. The token-scope decision was resolved with the
 user: this spec adds only the 7 replaced tokens + `--on-accent`, and defers the
-six stylist-only tokens to issue #7.
+six stylist-only tokens to issue #20.

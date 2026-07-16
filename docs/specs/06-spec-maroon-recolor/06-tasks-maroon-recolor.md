@@ -93,7 +93,7 @@ theme-color meta, no markup change), Success Metrics 1, 2 (partial), 5.
 Add `--on-accent: #f6ecd9;` to `:root` (with a short purpose comment) and replace
 the single hard-coded `color: #fff` on the `.btn-add, .btn-primary` rule
 (line ~169) with `color: var(--on-accent)`. Do **not** add the six stylist-only
-tokens (deferred to issue #7). Then confirm the full frontend suite stays green
+tokens (deferred to issue #20). Then confirm the full frontend suite stays green
 with no test modifications — proving neither unit changed behavior.
 
 Maps to: Spec Unit 2 (FRs: add `--on-accent`, tokenize `#fff`, no other handoff
@@ -109,7 +109,7 @@ tokens absent), 4 (behavior unchanged).
   color was tokenized and the token is reused, not inlined.
 - CLI: `grep -nE -- "--paper-sunk|--border|--ink-2|--placeholder|--pip-empty|--accent-line" frontend/src/index.css`
   returns **no matches** — demonstrates the six stylist-only tokens were not
-  added (correctly deferred to #7).
+  added (correctly deferred to #20).
 - Test: `cd frontend && npm test -- --run` passes with all 10 existing test
   suites green and **zero test files modified** — demonstrates no behavioral
   change (no test asserts a color).
@@ -122,7 +122,7 @@ tokens absent), 4 (behavior unchanged).
   it with the other color tokens, e.g. after `--accent-soft`) with a short purpose
   comment such as `/* cream text/icons on maroon fill */`. Do not add
   `--paper-sunk`, `--border`, `--ink-2`, `--placeholder`, `--pip-empty`, or
-  `--accent-line` (those belong to issue #7).
+  `--accent-line` (those belong to issue #20).
 - [x] 2.2 In `frontend/src/index.css`, change the `.btn-add, .btn-primary` rule
   (line ~169) from `color: #fff;` to `color: var(--on-accent);`.
 - [x] 2.3 Verify tokenization: `grep -n "#fff" frontend/src/index.css` (expect no

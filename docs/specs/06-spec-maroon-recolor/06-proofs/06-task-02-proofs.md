@@ -5,7 +5,7 @@
 This task removes the single hard-coded color in the stylesheet by registering a
 new palette token `--on-accent: #f6ecd9` and pointing the filled-button rule at
 it (`color: #fff` → `color: var(--on-accent)`). The six stylist-only tokens are
-deliberately **not** added (deferred to issue #7). The full frontend test suite
+deliberately **not** added (deferred to issue #20). The full frontend test suite
 stays green with zero test edits, proving neither recolor unit changed behavior.
 
 ## What This Task Proves
@@ -54,7 +54,7 @@ at line 170.
 
 ## Artifact: Six stylist-only tokens correctly deferred
 
-**What it proves:** Scope stayed narrow — issue #7's tokens were not added.
+**What it proves:** Scope stayed narrow — issue #20's tokens were not added.
 
 **Why it matters:** Spec Non-Goal 1 + Success Metric 3 require these six tokens
 to be absent here.
@@ -135,6 +135,6 @@ but now driven by a palette token.
 ## Reviewer Conclusion
 
 The one hard-coded color is now a reused `--on-accent` token, the six stylist-only
-tokens remain deferred to issue #7, ESLint is clean, and the full 72-test suite
+tokens remain deferred to issue #20, ESLint is clean, and the full 72-test suite
 passes with no test changes — confirming the recolor is behavior-neutral. Combined
 with Task 1.0, the entire app is repaletted to maroon/beige by token edits alone.
