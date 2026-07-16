@@ -98,7 +98,7 @@ Strict TDD; 100% branch on the null/zero seed path. (Spec Unit 1.)
   `./gradlew test -PskipFrontend` and `./gradlew jacocoTestReport`; confirm green and 100%
   branch on the update rule. Commit.
 
-### [ ] 2.0 Stateless multi-turn re-pick / pushback (backend domain)
+### [x] 2.0 Stateless multi-turn re-pick / pushback (backend domain)
 
 Extends `POST /api/style` with an optional ordered `history` of `{role,text}` turns
 (mapped to `StylistMessage`), adds `StylistService.style(vibe, history)` (current
@@ -131,7 +131,7 @@ guardrail branch coverage preserved. (Spec Unit 2.)
 
 #### 2.0 Tasks
 
-- [ ] 2.1 RED: In `StylistServiceTest`, add `style_withHistory_forwardsPriorTurnsToModel`
+- [x] 2.1 RED: In `StylistServiceTest`, add `style_withHistory_forwardsPriorTurnsToModel`
   (call `service.style("too plain", List.of(user("streetwear"), assistant("chose a,b")))`;
   capture the conversation; assert the prior turns appear before an appended current-vibe
   user turn), `style_repick_staysGroundedWithHallucinatedIdRetriedOnce` and
@@ -144,11 +144,11 @@ guardrail branch coverage preserved. (Spec Unit 2.)
   and `style_repeatedPushback_eachPickGrounded` (two consecutive pushback turns — stub the
   model across turns; assert each pick is grounded and the later call forwards the full
   accumulated thread). Confirm fails (no overload).
-- [ ] 2.2 GREEN: Add `StylistService.style(String vibe, List<StylistMessage> history)`;
+- [x] 2.2 GREEN: Add `StylistService.style(String vibe, List<StylistMessage> history)`;
   refactor `style(vibe)` to delegate with `List.of()`. In `pickWithOneRetry`, seed
   `conversation` with all `history` turns, then `StylistMessage.user(vibe)`, before the
   existing grounding/retry logic (unchanged). Make the tests pass.
-- [ ] 2.3 RED: Extend `StyleRequest` to `{ String prompt, List<StyleTurn> history }` with a
+- [x] 2.3 RED: Extend `StyleRequest` to `{ String prompt, List<StyleTurn> history }` with a
   nested `record StyleTurn(String role, String text)`. Update the three existing
   `StyleControllerTest` stubs from `service.style(anyString())` to
   `service.style(anyString(), anyList())`, then add
@@ -156,20 +156,20 @@ guardrail branch coverage preserved. (Spec Unit 2.)
   outfit; verify the mapped turn count/roles via an `ArgumentCaptor`) and
   `postStyle_withHistory_upstreamFailure_returnsGracefulError` (503 `stylist_unavailable`).
   Confirm fails.
-- [ ] 2.4 GREEN: In `StyleController`, map `request.history()` (null → empty) to
+- [x] 2.4 GREEN: In `StyleController`, map `request.history()` (null → empty) to
   `List<StylistMessage>` (`"assistant"` → `assistant`, else `user`) and call
   `service.style(request.prompt(), history)`. Backward compatible (no history → empty).
   Make the tests pass.
-- [ ] 2.5 RED: In `AnthropicStylistModelClientTest`, following its existing SDK-mock
+- [x] 2.5 RED: In `AnthropicStylistModelClientTest`, following its existing SDK-mock
   pattern, add a case asserting that when the conversation contains a prior assistant turn
   the built request carries a "different"/"another" look instruction (system prompt or a
   synthesized turn), and a case asserting every forwarded `MessageParam` is text-only (no
   image content block). Confirm fails.
-- [ ] 2.6 GREEN: In `AnthropicStylistModelClient`, when the incoming conversation contains
+- [x] 2.6 GREEN: In `AnthropicStylistModelClient`, when the incoming conversation contains
   an assistant turn (i.e. a re-pick), append a concise "produce a different outfit from the
   previous look, addressing the user's feedback" instruction to the system prompt (or as a
   leading note). Keep it byte-free. Make the tests pass.
-- [ ] 2.7 REFACTOR: Extract a small `StyleTurn` → `StylistMessage` mapper if it clarifies
+- [x] 2.7 REFACTOR: Extract a small `StyleTurn` → `StylistMessage` mapper if it clarifies
   the controller; add javadoc noting stateless resend + the different-look nudge. Run
   `./gradlew test -PskipFrontend` and `jacocoTestReport`; confirm 100% branch on the
   guardrail. Capture the two-`curl` re-pick CLI proof (live key, sanitized). Commit.
