@@ -7,13 +7,13 @@
 
 :root {
   /* Color */
-  --paper: #f7f5f0;
-  --paper-raised: #fffefb;
-  --ink: #1c1b19;
-  --muted: #8a857b;
-  --hairline: #e0dcd2;
-  --accent: #2540ff;
-  --accent-soft: #e7ebff;
+  --paper: #f3ecdd;
+  --paper-raised: #fcf8ef;
+  --ink: #33271f;
+  --muted: #8f8272;
+  --hairline: #e3d8c4;
+  --accent: #7c2833;
+  --accent-soft: #ecd9d3;
   --danger: #b00020;
   --danger-soft: #fbe7ea;
 
