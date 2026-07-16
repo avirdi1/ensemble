@@ -169,7 +169,7 @@ rows from the wardrobe/stylist. (Spec Unit 3.)
 - [x] 4.5 **(RED→GREEN)** Add MockMvc tests `postStyle_overDailyCap_returns429` (`StyleControllerTest`) and `postTag_overDailyCap_returns429` (`TaggingControllerTest`) with the cap service mocked to throw. Then call `callCapService.reserve()` at the **start** of both flows (before the Claude call) and map `DailyCapExceededException` → `429` with the shared `ErrorResponse` in `ApiExceptionHandler`.
 - [x] 4.6 Add `ensemble.usage.daily-limit: 100` to `src/main/resources/application.yml` (+ a value in the test yml); confirm context tests load. Boot with `ensemble.usage.daily-limit=2` and capture the CallCapService/IT/scan-filter/controller test outputs + the three-call `429` curl proof.
 
-### [ ] 5.0 Integration, secret-safety & regression verification
+### [x] 5.0 Integration, secret-safety & regression verification
 
 Cross-cutting closeout: prove the passcode value is absent from the built client bundle, add the
 new env-var placeholders without committing a secret, confirm coverage on the critical logic, run
@@ -185,8 +185,8 @@ the full specs 01–07 suites for no regressions, and refresh the docs. (Spec su
 
 #### 5.0 Tasks
 
-- [ ] 5.1 Add `ENSEMBLE_PASSCODE=<your-demo-passcode>` and the optional `ENSEMBLE_SESSION_SECRET=` placeholders to `.env.example`; confirm `.env` stays git-ignored and `pre-commit run --all-files` (secret scan) passes.
-- [ ] 5.2 Run `cd frontend && npm run build`, then `grep -rF "$ENSEMBLE_PASSCODE" src/main/resources/static/ ; echo "exit=$?"` → no match; capture the bundle-grep secret-safety proof.
-- [ ] 5.3 Run the full `./gradlew test` and `cd frontend && npm test -- --run`; confirm specs 01–07 are green (no regressions — pay attention to the specs 04/05 frontend api tests touched by the authed-fetch refactor); capture the proof.
-- [ ] 5.4 Run `./gradlew jacocoTestReport`; confirm ≥90% line + 100% branch on token verify, the daily-limit check, and the scan filter; cite the report path.
-- [ ] 5.5 Update `README.md` / relevant `docs/` with the PWA install steps and the passcode + daily-cap env vars/config; capture the doc diff.
+- [x] 5.1 Add `ENSEMBLE_PASSCODE=<your-demo-passcode>` and the optional `ENSEMBLE_SESSION_SECRET=` placeholders to `.env.example`; confirm `.env` stays git-ignored and `pre-commit run --all-files` (secret scan) passes.
+- [x] 5.2 Run `cd frontend && npm run build`, then `grep -rF "$ENSEMBLE_PASSCODE" src/main/resources/static/ ; echo "exit=$?"` → no match; capture the bundle-grep secret-safety proof.
+- [x] 5.3 Run the full `./gradlew test` and `cd frontend && npm test -- --run`; confirm specs 01–07 are green (no regressions — pay attention to the specs 04/05 frontend api tests touched by the authed-fetch refactor); capture the proof.
+- [x] 5.4 Run `./gradlew jacocoTestReport`; confirm ≥90% line + 100% branch on token verify, the daily-limit check, and the scan filter; cite the report path.
+- [x] 5.5 Update `README.md` / relevant `docs/` with the PWA install steps and the passcode + daily-cap env vars/config; capture the doc diff.
