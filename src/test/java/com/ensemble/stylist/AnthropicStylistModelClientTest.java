@@ -22,6 +22,7 @@ import com.anthropic.models.messages.ContentBlockParam;
 import com.anthropic.models.messages.Message;
 import com.anthropic.models.messages.MessageCreateParams;
 import com.anthropic.models.messages.MessageParam;
+import com.anthropic.models.messages.Tool;
 import com.anthropic.models.messages.ToolUnion;
 import com.anthropic.models.messages.ToolUseBlock;
 import com.anthropic.services.blocking.MessageService;
@@ -71,6 +72,12 @@ class AnthropicStylistModelClientTest {
 		return params.tools().orElseThrow().stream()
 			.map(ToolUnion::tool).filter(Optional::isPresent).map(Optional::get)
 			.map(tool -> tool.name()).toList();
+	}
+
+	private static Tool toolNamed(MessageCreateParams params, String name) {
+		return params.tools().orElseThrow().stream()
+			.map(ToolUnion::tool).filter(Optional::isPresent).map(Optional::get)
+			.filter(tool -> name.equals(tool.name())).findFirst().orElseThrow();
 	}
 
 	private static void assertNoImageBlocks(MessageCreateParams params) {
@@ -197,6 +204,31 @@ class AnthropicStylistModelClientTest {
 		for (MessageParam mp : params.messages()) {
 			assertThat(mp.content().string()).isPresent();
 		}
+	}
+
+	@Test
+	void recordOutfitTool_requestsPerItemRationale_inSchemaPromptAndDescription() {
+		Message reply = message(List.of(
+			toolUse("record_outfit", "r1",
+				Map.of("reason", "clean", "pieces", List.of(Map.of("itemId", "a", "rationale", "base"))))));
+		when(messages.create(any(MessageCreateParams.class))).thenReturn(reply);
+
+		seam().proposeOutfit("wardrobe tags", List.of(StylistMessage.user("brunch")));
+
+		ArgumentCaptor<MessageCreateParams> captor = ArgumentCaptor.forClass(MessageCreateParams.class);
+		verify(messages).create(captor.capture());
+		MessageCreateParams params = captor.getValue();
+
+		// The forced tool's schema requires a `pieces` array carrying a per-item `rationale`.
+		Tool record = toolNamed(params, "record_outfit");
+		Map<String, JsonValue> schema = record.inputSchema()._additionalProperties();
+		String properties = schema.get("properties").toString();
+		assertThat(properties).contains("pieces").contains("rationale");
+		assertThat(schema.get("required").toString()).contains("pieces");
+
+		// The tool description and the system prompt both ask for a per-piece rationale.
+		assertThat(record.description().orElseThrow()).containsIgnoringCase("rationale");
+		assertThat(params.system().orElseThrow().asString()).containsIgnoringCase("rationale");
 	}
 
 	@Test

@@ -1,8 +1,10 @@
 package com.ensemble.stylist;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -105,7 +107,16 @@ public class StylistService {
 			throw new StylistUnavailableException(
 				"Couldn't build a grounded outfit from your wardrobe. Please try again.");
 		}
-		return new Outfit(grounded, pick.reason());
+		// Carry only the grounded ids' rationale — a hallucinated id's rationale is dropped
+		// with the id itself, so nothing unvalidated is ever surfaced.
+		Map<String, String> groundedRationale = new LinkedHashMap<>();
+		for (String id : grounded) {
+			String rationale = pick.rationaleFor(id);
+			if (!rationale.isEmpty()) {
+				groundedRationale.put(id, rationale);
+			}
+		}
+		return new Outfit(grounded, pick.reason(), groundedRationale);
 	}
 
 	/**

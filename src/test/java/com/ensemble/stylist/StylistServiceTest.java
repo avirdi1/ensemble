@@ -42,6 +42,19 @@ class StylistServiceTest {
 		return "{\"itemIds\":[" + idList + "],\"reason\":\"" + reason + "\"}";
 	}
 
+	/** A `pieces`-shaped pick: alternating id then rationale, e.g. pieces("r","a","ra","b","rb"). */
+	private static String pieces(String reason, String... idThenRationale) {
+		StringBuilder sb = new StringBuilder("{\"reason\":\"").append(reason).append("\",\"pieces\":[");
+		for (int i = 0; i + 1 < idThenRationale.length; i += 2) {
+			if (i > 0) {
+				sb.append(',');
+			}
+			sb.append("{\"itemId\":\"").append(idThenRationale[i])
+				.append("\",\"rationale\":\"").append(idThenRationale[i + 1]).append("\"}");
+		}
+		return sb.append("]}").toString();
+	}
+
 	@Test
 	void styleRequest_withValidOutput_returnsGroundedOutfit() {
 		when(wardrobe.list()).thenReturn(List.of(item("a"), item("b")));
@@ -52,6 +65,37 @@ class StylistServiceTest {
 		assertThat(outfit.itemIds()).containsExactly("a", "b");
 		assertThat(outfit.reason()).isEqualTo("navy layers");
 		verify(model, times(1)).proposeOutfit(anyString(), anyList());
+	}
+
+	@Test
+	void styleRequest_withPieces_carriesRationaleForGroundedIdsOnly() {
+		when(wardrobe.list()).thenReturn(List.of(item("a"), item("b")));
+		// The model returns per-item rationale for a, b, and a hallucinated ghost id.
+		when(model.proposeOutfit(anyString(), anyList()))
+			.thenReturn(pieces("brunch", "a", "breathes well", "b", "earthy tone", "ghost", "not owned"));
+
+		Outfit outfit = service.style("brunch");
+
+		assertThat(outfit.itemIds()).containsExactly("a", "b");
+		assertThat(outfit.rationaleFor("a")).isEqualTo("breathes well");
+		assertThat(outfit.rationaleFor("b")).isEqualTo("earthy tone");
+		// The hallucinated id is dropped along with its rationale — only grounded ids survive.
+		assertThat(outfit.rationaleById()).containsOnlyKeys("a", "b");
+	}
+
+	@Test
+	void styleRequest_withPieces_hallucinatedId_retriesOnceThenCarriesRationale() {
+		when(wardrobe.list()).thenReturn(List.of(item("a"), item("b")));
+		when(model.proposeOutfit(anyString(), anyList()))
+			.thenReturn(pieces("first", "a", "ok", "ghost", "bad"))
+			.thenReturn(pieces("second", "a", "clean base", "b", "adds contrast"));
+
+		Outfit outfit = service.style("date night");
+
+		assertThat(outfit.itemIds()).containsExactly("a", "b");
+		assertThat(outfit.reason()).isEqualTo("second");
+		assertThat(outfit.rationaleFor("b")).isEqualTo("adds contrast");
+		verify(model, times(2)).proposeOutfit(anyString(), anyList());
 	}
 
 	@Test
