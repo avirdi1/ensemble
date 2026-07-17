@@ -493,6 +493,69 @@ select.input {
 
 /* ---- Stylist ------------------------------------------------------------ */
 
+/* Two-pane stylist shell: a wardrobe drawer beside the conversational main
+   column on desktop; stacked with the drawer behind a toggle on mobile. */
+.stylist-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.stylist-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.wardrobe-drawer {
+  flex: 0 0 250px;
+  align-self: stretch;
+  padding: var(--space-4);
+  background: var(--paper-sunk);
+  border-right: 1px solid var(--border);
+}
+
+/* Shown only on narrow viewports, where it toggles the collapsible drawer. */
+.drawer-toggle {
+  display: none;
+}
+
+@media (max-width: 56.25rem) {
+  .stylist-layout {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .drawer-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    min-height: 44px; /* touch target */
+    padding: 0 var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--paper-sunk);
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .wardrobe-drawer {
+    display: none;
+    width: 100%;
+    flex-basis: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .wardrobe-drawer.is-open {
+    display: block;
+  }
+}
+
 /* Mono, uppercase micro-label — the care-label voice, reused for section eyebrows. */
 .eyebrow {
   margin: 0;

@@ -106,7 +106,7 @@ Update the TS types/client and add pure spec-sheet helpers. No view code. (Spec 
 - [x] 3.4 RED: `specSheet.test.ts` for `swatchColor` — CSS-keyword colors (white/olive/tan) map through; non-keyword (e.g. "natural") → curated hex; unknown → neutral fallback. Then implement `swatchColor` (small curated map) to GREEN.
 - [x] 3.5 REFACTOR + run `npm run test -- --run` and `npm run lint`; capture helper test output into `20-proofs/`.
 
-### [ ] 4.0 Landing-route change + spec-sheet screen shell
+### [x] 4.0 Landing-route change + spec-sheet screen shell
 
 Stylist → landing `/`; grid → `/wardrobe`; fix internal links; lay out the two-pane shell. (Spec Unit 3 — routing + layout.)
 
@@ -119,10 +119,10 @@ Stylist → landing `/`; grid → `/wardrobe`; fix internal links; lay out the t
 
 #### 4.0 Tasks
 
-- [ ] 4.1 RED: update `App.test.tsx` to assert `/` = stylist and `/wardrobe` = grid. Then in `App.tsx` set `/` → `Stylist`, `/wardrobe` → `WardrobeGrid` (keep `/add`, `/item/:id`); add a `Wardrobe` header link; optionally add `/style` → `<Navigate to="/" replace/>`. GREEN.
-- [ ] 4.2 RED: update `AddItem.test.tsx` + `ItemDetail.test.tsx` redirect/back probes to `/wardrobe`. Then change `navigate('/')` → `navigate('/wardrobe')` in `AddItem.tsx` and `ItemDetail.tsx`, and `<Link to="/">` → `/wardrobe` in `ItemDetail.tsx`. GREEN.
-- [ ] 4.3 Lay out the two-pane shell in `Stylist.tsx` + `index.css`: `--paper-sunk` drawer (250px, `border-right`) + flex main column; mobile-first stack <900px with the drawer as a toggle/bottom sheet. (WardrobeDrawer contents land in task 5; a placeholder is fine here.)
-- [ ] 4.4 Run `npm run test -- --run`; capture desktop + mobile shell screenshots into `20-proofs/assets/`.
+- [x] 4.1 RED: update `App.test.tsx` to assert `/` = stylist and `/wardrobe` = grid. Then in `App.tsx` set `/` → `Stylist`, `/wardrobe` → `WardrobeGrid` (keep `/add`, `/item/:id`); add a `Wardrobe` header link; optionally add `/style` → `<Navigate to="/" replace/>`. GREEN.
+- [x] 4.2 RED: update `AddItem.test.tsx` + `ItemDetail.test.tsx` redirect/back probes to `/wardrobe`. Then change `navigate('/')` → `navigate('/wardrobe')` in `AddItem.tsx` and `ItemDetail.tsx`, and `<Link to="/">` → `/wardrobe` in `ItemDetail.tsx`. GREEN.
+- [x] 4.3 Lay out the two-pane shell in `Stylist.tsx` + `index.css`: `--paper-sunk` drawer (250px, `border-right`) + flex main column; mobile-first stack <900px with the drawer as a toggle/bottom sheet. (WardrobeDrawer contents land in task 5; a placeholder is fine here.)
+- [x] 4.4 Run `npm run test -- --run`; capture desktop + mobile shell screenshots into `20-proofs/assets/`.
 
 ### [ ] 5.0 Chat stream, flat-lay result, spec list & chips
 

@@ -30,6 +30,9 @@ function summarize(outfit: Outfit): string {
 export default function Stylist() {
   const [vibe, setVibe] = useState('')
   const [pushback, setPushback] = useState('')
+  // The wardrobe drawer is always visible on desktop; on narrow viewports it
+  // collapses behind this toggle (its contents land in task 5.0).
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const [outfit, setOutfit] = useState<Outfit | null>(null)
   const [status, setStatus] = useState<Status>('idle')
   const [logStatus, setLogStatus] = useState<LogStatus>('idle')
@@ -118,9 +121,29 @@ export default function Stylist() {
   const showCard = hasLook && outfit !== null && (status === 'ready' || loading)
 
   return (
-    <section data-testid="stylist" className="screen">
-      <p className="eyebrow">Stylist</p>
-      <h1 className="screen-title">What’s the vibe?</h1>
+    <div className="stylist-layout">
+      <button
+        type="button"
+        className="drawer-toggle"
+        aria-expanded={drawerOpen}
+        aria-controls="wardrobe-drawer"
+        onClick={() => setDrawerOpen((open) => !open)}
+      >
+        {drawerOpen ? 'Hide wardrobe' : 'Your wardrobe'}
+      </button>
+
+      <aside
+        id="wardrobe-drawer"
+        className={`wardrobe-drawer${drawerOpen ? ' is-open' : ''}`}
+        aria-label="Your wardrobe"
+      >
+        <p className="eyebrow">Your wardrobe</p>
+        <p className="state-note">Your pieces will appear here.</p>
+      </aside>
+
+      <section data-testid="stylist" className="screen stylist-main">
+        <p className="eyebrow">Stylist</p>
+        <h1 className="screen-title">What’s the vibe?</h1>
 
       <form className="vibe-form" onSubmit={onSubmit}>
         <div className="field">
@@ -244,6 +267,7 @@ export default function Stylist() {
           </form>
         </article>
       )}
-    </section>
+      </section>
+    </div>
   )
 }

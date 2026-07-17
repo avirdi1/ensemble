@@ -45,7 +45,7 @@ function renderDetail(id = 'abc') {
     <MemoryRouter initialEntries={[`/item/${id}`]}>
       <Routes>
         <Route path="/item/:id" element={<ItemDetail />} />
-        <Route path="/" element={<div>wardrobe grid</div>} />
+        <Route path="/wardrobe" element={<div>wardrobe grid</div>} />
       </Routes>
     </MemoryRouter>,
   )

@@ -56,7 +56,7 @@ export default function ItemDetail() {
     setDeleting(true)
     setError(null)
     deleteItem(id)
-      .then(() => navigate('/'))
+      .then(() => navigate('/wardrobe'))
       .catch(() => {
         setError('We couldn’t delete this item. Please try again.')
         setDeleting(false)
@@ -78,7 +78,7 @@ export default function ItemDetail() {
         <div className="state-block">
           <h1 className="empty-title">Item not found</h1>
           <p className="state-note">This item may have been removed.</p>
-          <Link to="/" className="btn btn-primary">
+          <Link to="/wardrobe" className="btn btn-primary">
             Back to wardrobe
           </Link>
         </div>
