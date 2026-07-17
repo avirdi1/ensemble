@@ -52,7 +52,7 @@ stream, handoff chip copy. Per-item rationale is real LLM output (Q1=B).
 
 ## Tasks
 
-### [ ] 1.0 Define the six deferred design tokens
+### [x] 1.0 Define the six deferred design tokens
 
 Add the drawer/tray/pip/rationale tokens to `:root`. Pure token addition. (Spec Unit 1.)
 
@@ -64,9 +64,9 @@ Add the drawer/tray/pip/rationale tokens to `:root`. Pure token addition. (Spec 
 
 #### 1.0 Tasks
 
-- [ ] 1.1 Add the six tokens to `:root` in `frontend/src/index.css` after the existing color tokens (near `--accent-soft`), with the exact handoff values and their purpose comments; do not touch existing tokens or re-add `--on-accent`.
-- [ ] 1.2 Run `npm run test -- --run` and `npm run lint`; confirm green (no snapshot/behavior change).
-- [ ] 1.3 Capture the two grep proofs (tokens present; diff additions-only) into `20-proofs/`.
+- [x] 1.1 Add the six tokens to `:root` in `frontend/src/index.css` after the existing color tokens (near `--accent-soft`), with the exact handoff values and their purpose comments; do not touch existing tokens or re-add `--on-accent`.
+- [x] 1.2 Run `npm run test -- --run` and `npm run lint`; confirm green (no snapshot/behavior change).
+- [x] 1.3 Capture the two grep proofs (tokens present; diff additions-only) into `20-proofs/`.
 
 ### [ ] 2.0 Per-garment rationale from the stylist agent (backend)
 

@@ -18,6 +18,14 @@
   --danger: #b00020;
   --danger-soft: #fbe7ea;
 
+  /* Stylist-screen surfaces (drawer / flat-lay tray / pips / rationale) */
+  --paper-sunk: #e9dfca; /* drawer + flat-lay tray background (a step darker than paper) */
+  --border: #d7cab2; /* stronger border than --hairline: inputs, tiles, buttons */
+  --ink-2: #574a3d; /* secondary body text / rationale copy */
+  --placeholder: #a89a86; /* input placeholder + search hint */
+  --pip-empty: #d8cbb2; /* unfilled rating pip */
+  --accent-line: rgba(124, 40, 51, .22); /* border on the user chat bubble */
+
   /* Type */
   --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
   --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
