@@ -1,6 +1,9 @@
 package com.ensemble.stylist.web;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +18,8 @@ import com.ensemble.stylist.dto.StyleRequest;
 import com.ensemble.stylist.dto.StyleRequest.StyleTurn;
 import com.ensemble.stylist.dto.StyleResponse;
 import com.ensemble.stylist.dto.StyleResponse.OutfitItem;
+import com.ensemble.wardrobe.WardrobeService;
+import com.ensemble.wardrobe.dto.ItemResponse;
 
 /**
  * REST API for the stylist under {@code /api/style}. Accepts a free-text vibe and
@@ -38,18 +43,46 @@ import com.ensemble.stylist.dto.StyleResponse.OutfitItem;
 public class StyleController {
 
 	private final StylistService service;
+	private final WardrobeService wardrobe;
 
-	public StyleController(StylistService service) {
+	public StyleController(StylistService service, WardrobeService wardrobe) {
 		this.service = service;
+		this.wardrobe = wardrobe;
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public StyleResponse style(@RequestBody StyleRequest request) {
 		Outfit outfit = service.style(request.prompt(), toHistory(request.history()));
-		List<OutfitItem> items = outfit.itemIds().stream()
-			.map(id -> new OutfitItem(id, "/api/items/" + id + "/photo"))
-			.toList();
+		List<OutfitItem> items = enrich(outfit);
 		return new StyleResponse(outfit.itemIds(), outfit.reason(), items);
+	}
+
+	/**
+	 * Assembles each render-ready {@link OutfitItem}: the stylist's per-item
+	 * rationale (from the {@link Outfit}) joined to the item's stored tags (from the
+	 * wardrobe, keyed by id). The wardrobe is read once and looked up by id; a
+	 * grounded id with no matching item (a benign race) degrades to null tags rather
+	 * than failing the request. An empty outfit yields an empty list without a
+	 * wardrobe read cost that matters at demo scale.
+	 */
+	private List<OutfitItem> enrich(Outfit outfit) {
+		if (outfit.itemIds().isEmpty()) {
+			return List.of();
+		}
+		Map<String, ItemResponse> byId = wardrobe.list().stream()
+			.collect(Collectors.toMap(ItemResponse::itemId, Function.identity(), (first, second) -> first));
+		return outfit.itemIds().stream()
+			.map(id -> toOutfitItem(id, outfit.rationaleFor(id), byId.get(id)))
+			.toList();
+	}
+
+	private static OutfitItem toOutfitItem(String id, String rationale, ItemResponse item) {
+		String photoUrl = "/api/items/" + id + "/photo";
+		if (item == null) {
+			return new OutfitItem(id, photoUrl, rationale, null, null, null, null, List.of());
+		}
+		return new OutfitItem(id, photoUrl, rationale,
+			item.category(), item.primaryColor(), item.formality(), item.warmth(), item.descriptors());
 	}
 
 	/**

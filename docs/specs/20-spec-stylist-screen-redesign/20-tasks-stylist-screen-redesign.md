@@ -68,7 +68,7 @@ Add the drawer/tray/pip/rationale tokens to `:root`. Pure token addition. (Spec 
 - [x] 1.2 Run `npm run test -- --run` and `npm run lint`; confirm green (no snapshot/behavior change).
 - [x] 1.3 Capture the two grep proofs (tokens present; diff additions-only) into `20-proofs/`.
 
-### [ ] 2.0 Per-garment rationale from the stylist agent (backend)
+### [x] 2.0 Per-garment rationale from the stylist agent (backend)
 
 Extend the forced output to a rationale per chosen item; parse + ground it; enrich the response DTO. Strict TDD, 100% branch on parse + grounding. (Spec Unit 2.)
 
@@ -81,12 +81,12 @@ Extend the forced output to a rationale per chosen item; parse + ground it; enri
 
 #### 2.0 Tasks
 
-- [ ] 2.1 RED: extend `OutfitTest` for a rationale-per-id (`rationaleById`) accessor — null/absent map defaults to empty, lookups for unknown ids return `""`. Then add the field to `Outfit` (canonical-empty safe) to GREEN.
-- [ ] 2.2 RED: add `OutfitParserTest` cases — `pieces:[{itemId,rationale}]` well-formed (ids in order + rationale map); a piece missing/blank `rationale` (→ `""`); `pieces` absent but legacy `itemIds` present (→ ids, empty rationale); malformed/absent JSON (→ `Outfit.empty()`). Then extend `OutfitParser.parse` to read `pieces` (fallback to `itemIds`) to GREEN. Keep it never-throwing.
-- [ ] 2.3 RED: extend `StylistServiceTest` — a first pick naming a hallucinated piece id is corrected via one user retry; the grounded result keeps rationale only for owned ids; ungroundable → `StylistUnavailableException`; empty wardrobe unchanged. Then update `StylistService` grounding to carry `rationaleById` for the grounded subset to GREEN.
-- [ ] 2.4 RED: extend `AnthropicStylistModelClientTest` — the `record_outfit` tool inputSchema requires a `pieces` array of `{itemId, rationale}` and a top-level `reason`; the prompt asks for a one-line rationale per piece; the wardrobe payload still carries no image bytes. Then update `AnthropicStylistModelClient` schema + prompt to GREEN.
-- [ ] 2.5 RED: extend `StyleControllerTest` — the response `items[]` each carry `rationale` + `category`/`primaryColor`/`formality`/`warmth`/`descriptors` joined from the owned item; empty-wardrobe is a normal 200 with empty items. Then add `rationale` + tag fields to `StyleResponse.OutfitItem` and enrich in `StyleController` (join grounded id → `ItemResponse` via `WardrobeService`, attach rationale) to GREEN.
-- [ ] 2.6 REFACTOR: de-duplicate the id→tags join; run `./gradlew test -PskipFrontend` + `jacocoTestReport`; confirm 100% branch on `OutfitParser` + grounding. Capture the sample JSON + coverage proof into `20-proofs/`.
+- [x] 2.1 RED: extend `OutfitTest` for a rationale-per-id (`rationaleById`) accessor — null/absent map defaults to empty, lookups for unknown ids return `""`. Then add the field to `Outfit` (canonical-empty safe) to GREEN.
+- [x] 2.2 RED: add `OutfitParserTest` cases — `pieces:[{itemId,rationale}]` well-formed (ids in order + rationale map); a piece missing/blank `rationale` (→ `""`); `pieces` absent but legacy `itemIds` present (→ ids, empty rationale); malformed/absent JSON (→ `Outfit.empty()`). Then extend `OutfitParser.parse` to read `pieces` (fallback to `itemIds`) to GREEN. Keep it never-throwing.
+- [x] 2.3 RED: extend `StylistServiceTest` — a first pick naming a hallucinated piece id is corrected via one user retry; the grounded result keeps rationale only for owned ids; ungroundable → `StylistUnavailableException`; empty wardrobe unchanged. Then update `StylistService` grounding to carry `rationaleById` for the grounded subset to GREEN.
+- [x] 2.4 RED: extend `AnthropicStylistModelClientTest` — the `record_outfit` tool inputSchema requires a `pieces` array of `{itemId, rationale}` and a top-level `reason`; the prompt asks for a one-line rationale per piece; the wardrobe payload still carries no image bytes. Then update `AnthropicStylistModelClient` schema + prompt to GREEN.
+- [x] 2.5 RED: extend `StyleControllerTest` — the response `items[]` each carry `rationale` + `category`/`primaryColor`/`formality`/`warmth`/`descriptors` joined from the owned item; empty-wardrobe is a normal 200 with empty items. Then add `rationale` + tag fields to `StyleResponse.OutfitItem` and enrich in `StyleController` (join grounded id → `ItemResponse` via `WardrobeService`, attach rationale) to GREEN.
+- [x] 2.6 REFACTOR: de-duplicate the id→tags join; run `./gradlew test -PskipFrontend` + `jacocoTestReport`; confirm 100% branch on `OutfitParser` + grounding. Capture the sample JSON + coverage proof into `20-proofs/`.
 
 ### [ ] 3.0 Frontend data layer: enriched contract + deterministic render helpers
 

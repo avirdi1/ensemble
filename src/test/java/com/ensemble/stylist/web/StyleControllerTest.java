@@ -10,7 +10,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,8 @@ import com.ensemble.stylist.Outfit;
 import com.ensemble.stylist.StylistMessage;
 import com.ensemble.stylist.StylistService;
 import com.ensemble.stylist.StylistUnavailableException;
+import com.ensemble.wardrobe.WardrobeService;
+import com.ensemble.wardrobe.dto.ItemResponse;
 
 /**
  * MockMvc contract + error-path tests for {@code POST /api/style}. The
@@ -40,6 +44,37 @@ class StyleControllerTest {
 
 	@MockitoBean
 	StylistService service;
+
+	@MockitoBean
+	WardrobeService wardrobe;
+
+	private static ItemResponse item(String id, String category, String color, int formality, int warmth) {
+		return new ItemResponse(id, category, color, null, formality, "solid", warmth, List.of("linen"),
+			"/api/items/" + id + "/photo", Instant.parse("2026-01-01T00:00:00Z"), null, 0);
+	}
+
+	@Test
+	void postStyle_enrichesItemsWithRationaleAndStoredTags() throws Exception {
+		when(service.style(anyString(), anyList())).thenReturn(new Outfit(
+			List.of("a", "b"), "brunch-ready",
+			Map.of("a", "breathes on a warm morning", "b", "earthy tone lifts the look")));
+		when(wardrobe.list()).thenReturn(List.of(
+			item("a", "shirt", "white", 3, 2), item("b", "chinos", "olive", 3, 2)));
+
+		mockMvc.perform(post("/api/style")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{\"prompt\":\"brunch\"}"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.items[0].itemId").value("a"))
+			.andExpect(jsonPath("$.items[0].rationale").value("breathes on a warm morning"))
+			.andExpect(jsonPath("$.items[0].category").value("shirt"))
+			.andExpect(jsonPath("$.items[0].primaryColor").value("white"))
+			.andExpect(jsonPath("$.items[0].formality").value(3))
+			.andExpect(jsonPath("$.items[0].warmth").value(2))
+			.andExpect(jsonPath("$.items[0].descriptors[0]").value("linen"))
+			.andExpect(jsonPath("$.items[1].rationale").value("earthy tone lifts the look"))
+			.andExpect(jsonPath("$.items[1].category").value("chinos"));
+	}
 
 	@Test
 	void postStyle_valid_returns200WithOutfit() throws Exception {

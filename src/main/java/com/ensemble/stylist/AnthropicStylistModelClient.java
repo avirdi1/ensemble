@@ -48,7 +48,7 @@ public class AnthropicStylistModelClient implements StylistModelClient {
 	/** Tool the model calls to read the wardrobe; also asserted by tests. */
 	static final String SEARCH_TOOL = "searchWardrobe";
 
-	/** Forced final tool; its input JSON is the {@code {itemIds, reason}} pick. */
+	/** Forced final tool; its input JSON is the {@code {reason, pieces:[{itemId, rationale}]}} pick. */
 	static final String RECORD_TOOL = "record_outfit";
 
 	/** Upper bound on model turns so a misbehaving loop cannot run forever. */
@@ -63,9 +63,9 @@ public class AnthropicStylistModelClient implements StylistModelClient {
 		(each item's id, tags, and wear-history). Decide which pieces — and how many — \
 		make a coherent look; there are no fixed slots, so work with what is available. \
 		Prefer pieces that have not been worn recently when it does not hurt the look. \
-		When you are ready, call record_outfit with the chosen itemIds exactly as they \
-		appear in the wardrobe and a short reason explaining why the pieces work \
-		together. Never invent an itemId that is not in the wardrobe.""";
+		When you are ready, call record_outfit with the chosen pieces, each with its \
+		itemId (exactly as in the wardrobe) and a one-line rationale for that piece, \
+		plus a short overall reason the outfit works. Never invent an itemId not in the wardrobe.""";
 
 	/**
 	 * Appended to the system prompt on a re-pick (the conversation already carries a
@@ -207,19 +207,31 @@ public class AnthropicStylistModelClient implements StylistModelClient {
 			.build();
 	}
 
-	/** Forced-output tool: its input schema is the {@code {itemIds, reason}} pick shape. */
+	/**
+	 * Forced-output tool. Its input schema is the {@code {reason, pieces:[{itemId,
+	 * rationale}]}} pick shape: a {@code pieces} array where each entry pairs an
+	 * owned {@code itemId} with a one-line {@code rationale}, plus a whole-look
+	 * {@code reason}.
+	 */
 	private static Tool recordOutfitTool() {
+		Map<String, Object> pieceSchema = Map.of(
+			"type", "object",
+			"properties", Map.of(
+				"itemId", Map.of("type", "string"),
+				"rationale", Map.of("type", "string")),
+			"required", List.of("itemId", "rationale"));
 		Tool.InputSchema schema = Tool.InputSchema.builder()
 			.type(JsonValue.from("object"))
 			.putAdditionalProperty("properties", JsonValue.from(Map.of(
-				"itemIds", Map.of("type", "array", "items", Map.of("type", "string")),
+				"pieces", Map.of("type", "array", "items", pieceSchema),
 				"reason", Map.of("type", "string"))))
-			.putAdditionalProperty("required", JsonValue.from(List.of("itemIds", "reason")))
+			.putAdditionalProperty("required", JsonValue.from(List.of("pieces", "reason")))
 			.build();
 		return Tool.builder()
 			.name(RECORD_TOOL)
-			.description("Record the chosen outfit: the itemIds (exactly as listed in the wardrobe) "
-				+ "and a short reason the pieces work together.")
+			.description("Record the chosen outfit. `pieces` is one entry per garment: its itemId "
+				+ "(exactly as listed in the wardrobe) and a one-line rationale for why that piece "
+				+ "belongs in the look. `reason` is a short overall note on why the outfit works.")
 			.inputSchema(schema)
 			.build();
 	}
